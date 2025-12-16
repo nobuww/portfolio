@@ -83,7 +83,6 @@
 	</div>
 
 	<p class="text-ctp-overlay1 text-sm" in:fly={{ y: 20, duration: 200, delay: 500 }}>
-		Type <span class="text-ctp-mauve font-bold">'skills'</span> to see my technical skills, or
-		<span class="text-ctp-mauve font-bold">'projects'</span> to view my work.
+		Type <span class="text-ctp-mauve font-bold">'help'</span> to see available commands.
 	</p>
 </div>

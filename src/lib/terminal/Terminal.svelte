@@ -4,7 +4,6 @@
 	import Prompt from './Prompt.svelte';
 	import OutputLine from './OutputLine.svelte';
 	import { executeCommand, type CommandResult } from './commandExecutor';
-	import { WELCOME_ART } from '$lib/utils/asciiArt';
 
 	import HelpMenu from '$lib/commands/HelpMenu.svelte';
 	import About from '$lib/commands/About.svelte';
@@ -38,12 +37,15 @@
 	};
 
 	onMount(() => {
-		outputs = [
-			{
-				id: 'welcome',
-				result: { type: 'ascii', content: WELCOME_ART }
-			}
-		];
+		const result = executeCommand('about');
+		const results = Array.isArray(result) ? result : [result];
+
+		outputs = results.map((res) => ({
+			id: generateId(),
+			command: 'about',
+			result: res
+		}));
+
 		promptComponent?.focus();
 	});
 
@@ -99,28 +101,30 @@
 		onclick={handleTerminalClick}
 		class="px-3 md:px-4 pt-2 pb-4 h-[calc(100dvh-5rem-env(safe-area-inset-bottom))] md:h-[85vh] md:min-h-[600px] md:max-h-[1000px] overflow-y-auto"
 	>
-		{#each outputs as output (output.id)}
-			<OutputLine command={output.command}>
-				{#snippet children()}
-					{#if output.result.type === 'text'}
-						<pre class="whitespace-pre-wrap text-ctp-text">{output.result.content}</pre>
-					{:else if output.result.type === 'ascii'}
-						<pre class="text-ctp-blue whitespace-pre font-mono text-xs sm:text-sm">{output.result
-								.content}</pre>
-					{:else if output.result.type === 'error'}
-						<span class="text-ctp-red">{output.result.content}</span>
-					{:else if output.result.type === 'component' && output.result.componentName}
-						{@const Component = componentMap[output.result.componentName]}
-						{#if Component}
-							{#if output.result.componentName === 'ShutdownSequence'}
-								<Component />
-							{:else}
-								<Component {...output.result.props} />
+		{#each outputs as output, i (output.id)}
+			<div class={i === 0 ? 'mt-2' : ''}>
+				<OutputLine command={output.command}>
+					{#snippet children()}
+						{#if output.result.type === 'text'}
+							<pre class="whitespace-pre-wrap text-ctp-text">{output.result.content}</pre>
+						{:else if output.result.type === 'ascii'}
+							<pre class="text-ctp-blue whitespace-pre font-mono text-xs sm:text-sm">{output.result
+									.content}</pre>
+						{:else if output.result.type === 'error'}
+							<span class="text-ctp-red">{output.result.content}</span>
+						{:else if output.result.type === 'component' && output.result.componentName}
+							{@const Component = componentMap[output.result.componentName]}
+							{#if Component}
+								{#if output.result.componentName === 'ShutdownSequence'}
+									<Component />
+								{:else}
+									<Component {...output.result.props} />
+								{/if}
 							{/if}
 						{/if}
-					{/if}
-				{/snippet}
-			</OutputLine>
+					{/snippet}
+				</OutputLine>
+			</div>
 		{/each}
 
 		{#if !isShuttingDown}

@@ -4,9 +4,9 @@
 	let { data } = $props();
 
 	let links = $derived([
-		{ name: 'GitHub', url: `https://${data.github}`, icon: 'gh' },
-		{ name: 'LinkedIn', url: `https://${data.linkedin}`, icon: 'in' },
-		{ name: 'LeetCode', url: `https://${data.leetcode}`, icon: 'lc' },
+		{ name: 'GitHub', url: `${data.github}`, icon: 'gh' },
+		{ name: 'LinkedIn', url: `${data.linkedin}`, icon: 'in' },
+		{ name: 'LeetCode', url: `${data.leetcode}`, icon: 'lc' },
 		{ name: 'Email', url: `mailto:${data.email}`, icon: '@' }
 	]);
 </script>
